@@ -9,10 +9,13 @@ from kivy.uix.button import Button
 from kivy.core.window import Window
 
 from drawable_camera import DrawableCamera
+from tracking.feature_based.camera_tracker import TrackerDetector
 
 import cv2
 
 class MyApp(App):
+
+
     # Function to take a screenshot
     def doscreenshot(self, *largs):
         Window.screenshot(name='screenshot%(counter)04d.jpg')
@@ -22,10 +25,14 @@ class MyApp(App):
         return (cap.get(cv2.CAP_PROP_FRAME_WIDTH), cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
     def build(self):
+        #self.detector = FeatureDetector("brisk")
+        self.detector = TrackerDetector("KCF")
+
         w,h = self._get_camera_resolution()
         camwidget = Widget()  # Create a camera Widget
         # cam = Camera()  # Get the camera
         cam = DrawableCamera(resolution=(w*1.5, h*1.5), size=(w*1.5, h*1.5))
+        cam.set_detector(self.detector)
         cam.play = True  # Start the camera
         camwidget.add_widget(cam)
 
